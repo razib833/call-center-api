@@ -1,0 +1,20 @@
+# Pending contracts and release blockers
+
+| ID | Severity | Outstanding requirement / safe behavior |
+|---|---|---|
+| API-001 | Critical | Live SQL functional/security/transaction/concurrency tests, especially QA-009, have not executed. All 374 SQL cases remain blocked/pending. Unit/mock results do not close this. |
+| API-002 | Critical | Approved connectable restricted application identities, effective SQL permissions and independent identity attestation are missing. No identity is created; live execution approval defaults false. The QA WITHOUT LOGIN actors cannot authenticate API connections. Runtime attestation cannot be inferred from configuration alone. |
+| API-003 | High | Avaya and Manager authentication, CBS/Card/IB middleware and SMS/email provider wire contracts/credentials are unavailable. Production adapters fail closed. External session revocation and customer access scope remain pending. |
+| API-004 | High | Token replacement has no approved secure routing lookup or active-token-rowversion read. Ticket reads intentionally exclude customer routing identifiers. Replacement returns a safe 503; do not trust caller-supplied routing/PII or substitute ticket rowversion. Revocation also needs a legitimate active-token rowversion source for a fully usable portal workflow. No schema change is made. |
+| API-005 | High | No supplied procedure enumerates unknown attempts with the full attempt/lease/provider-request keys for reconciliation. Reconciliation backlog throws a named contract-gap error. |
+| API-006 | High | Outbox claim omits RelatedForwardingID; forwarding pending projection omits body/addresses; complete attempt persists provider facts without final forwarding status transition. No safe worker-readable association/finalization path is invented. Direct forwarding send helper fails closed instead of bypassing durable attempts. |
+| API-007 | High | Complete attempt changes rowversion; current worker-readable result contracts do not return the updated retry-state rowversion required to schedule an automatic retry. Automatic retry cannot be completed safely from the supplied projections. Both workers remain disabled; toggling enabled is rejected. |
+| API-008 | High | External provider/worker isolation, empty outbox and exact committed workload approval remain unverified. Phase 4 does not activate markers or change this. |
+| API-009 | Medium | AuthenticationLog_Create requires a verified TRUSTED actor. Failed authentication has no verified actor, and AUDIT principal is not TRUSTED. Supported successful sessions use SQL authentication logging; failed/Auditor authentication SQL logging requires an approved trusted writer contract. Auditor success has only safe structured application logging. |
+| API-010 | High | HTTPS smoke did not complete in this agent environment: certificate import failed and the alternative PEM listener did not yield a usable health connection. Loopback HTTP mock checks are explicitly separate and cannot validate production TLS/certificates/DPAPI/pooling. |
+| API-011 | Medium | Reported PKCS vulnerabilities remediated with explicit 9.0.21; all-project NuGet audit restore, build and 102 unit tests passed. Continue periodic dependency review; see BuildTestReport.md. |
+
+Generated endpoints and typed contracts compile, but metadata and mocks do not prove every configuration CRUD rule, configured transition, dashboard query, forwarding workflow or audit behavior. Bank transition/template publication oracles, production-scale load, opaque cipher/KMS integration and the broader existing FunctionalCoverage.md gaps remain open. The six integration groups are a pending scaffold with an opt-in read-only reference smoke implementation, not complete implemented integration coverage for every module.
+
+No schema/procedure change is made to resolve these gaps without explicit approval. Supply the missing contracts first; review a narrow procedure contract change only if necessary. This API is suitable for continued development and mock-based review; it is not production-ready or evidence that database QA passed.
+

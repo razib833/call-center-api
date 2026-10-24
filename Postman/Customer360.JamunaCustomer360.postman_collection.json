@@ -1,0 +1,498 @@
+{
+  "info": {
+    "name": "Customer360 — JamunaCustomer360 SQL Ticket Insertion",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "User-selected local development target: DESKTOP-BUDV4V7 / JamunaCustomer360. Ordinary API ticket creation through existing procedures, not the destructive QA suite. Prepared only; no live execution verified. The API server must use an approved restricted AGENT connection and real SQL mode. StartServices.bat forces mocks and is incompatible. Health detects mock mode but cannot attest the actual database/user. See JamunaCustomer360Setup.md."
+  },
+  "auth": {
+    "type": "noauth"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:7246"
+    },
+    {
+      "key": "sqlPrerequisitesReviewed",
+      "value": "NO"
+    },
+    {
+      "key": "serviceId",
+      "value": ""
+    },
+    {
+      "key": "versionId",
+      "value": ""
+    },
+    {
+      "key": "fieldValuesJson",
+      "value": "[]"
+    },
+    {
+      "key": "customerReference",
+      "value": "SYNTHETIC-CUSTOMER"
+    },
+    {
+      "key": "csrfToken",
+      "value": ""
+    },
+    {
+      "key": "ticketId",
+      "value": ""
+    },
+    {
+      "key": "ticketNumber",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 — Verify API is NOT using mock database",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "pm.test('Real SQL executor selected, workers off',()=>{const h=pm.response.json();pm.expect(h.mockDatabase).to.eql(false);pm.expect(h.workersEnabled).to.eql(false);});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 — Get CSRF token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/auth/csrf"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200)pm.collectionVariables.set('csrfToken',pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 — Local development synthetic Agent session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/development/session",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"persona\": \"Agent\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "function block(message) {",
+              "  pm.request.url.update('http://127.0.0.1:1/BLOCKED-SQL-QA-REQUEST');",
+              "  console.error(message);",
+              "  if (pm.execution && typeof pm.execution.skipRequest === 'function') pm.execution.skipRequest();",
+              "  throw new Error(message);",
+              "}",
+              "if (pm.collectionVariables.get('sqlPrerequisitesReviewed') !== 'YES') block('BLOCKED: approved Agent identity, JamunaCustomer360 target, local development provider isolation and committed ticket authorization must be reviewed first. See JamunaCustomer360Setup.md.');",
+              "const base = pm.collectionVariables.get('baseUrl');",
+              "if (!new RegExp('^https?:[/][/](localhost|127[.]0[.]0[.]1)(:[0-9]+)?[/]?$').test(base)) block('BLOCKED: configure the approved local loopback API URL.');",
+              "const body = pm.request.body && pm.request.body.raw;",
+              "if (body && body.includes('{{serviceId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('serviceId')))) block('Select a real published serviceId first.');",
+              "if (body && body.includes('{{versionId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('versionId')))) block('Retrieve a published version first.');",
+              "if (body && body.includes('{{ticketId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('ticketId')))) block('Create a real SQL ticket first.');",
+              "if (body && body.includes('{{fieldValuesJson}}')) { try { const values=JSON.parse(pm.collectionVariables.get('fieldValuesJson')); if(!Array.isArray(values)) throw new Error(); } catch(e) { block('fieldValuesJson must be a reviewed JSON array using actual published field IDs.'); } }",
+              "pm.sendRequest({url:base+'/health',method:'GET'}, function(error,response) {",
+              "  if(error || !response || response.code!==200) block('API health check failed; SQL request was not sent.');",
+              "  let h; try{h=response.json();}catch(e){block('Invalid API health response.');}",
+              "  if(h.mockDatabase!==false || h.workersEnabled!==false) block('BLOCKED: API must use real SQL with workers disabled. StartServices.bat forces mocks and cannot be used for this collection.');",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 — Refresh Agent CSRF token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/auth/csrf"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200)pm.collectionVariables.set('csrfToken',pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 — List actual services; select serviceId manually",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/configuration/service/list",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"page\": 1,\n  \"pageSize\": 50\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "function block(message) {",
+              "  pm.request.url.update('http://127.0.0.1:1/BLOCKED-SQL-QA-REQUEST');",
+              "  console.error(message);",
+              "  if (pm.execution && typeof pm.execution.skipRequest === 'function') pm.execution.skipRequest();",
+              "  throw new Error(message);",
+              "}",
+              "if (pm.collectionVariables.get('sqlPrerequisitesReviewed') !== 'YES') block('BLOCKED: approved Agent identity, JamunaCustomer360 target, local development provider isolation and committed ticket authorization must be reviewed first. See JamunaCustomer360Setup.md.');",
+              "const base = pm.collectionVariables.get('baseUrl');",
+              "if (!new RegExp('^https?:[/][/](localhost|127[.]0[.]0[.]1)(:[0-9]+)?[/]?$').test(base)) block('BLOCKED: configure the approved local loopback API URL.');",
+              "const body = pm.request.body && pm.request.body.raw;",
+              "if (body && body.includes('{{serviceId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('serviceId')))) block('Select a real published serviceId first.');",
+              "if (body && body.includes('{{versionId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('versionId')))) block('Retrieve a published version first.');",
+              "if (body && body.includes('{{ticketId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('ticketId')))) block('Create a real SQL ticket first.');",
+              "if (body && body.includes('{{fieldValuesJson}}')) { try { const values=JSON.parse(pm.collectionVariables.get('fieldValuesJson')); if(!Array.isArray(values)) throw new Error(); } catch(e) { block('fieldValuesJson must be a reviewed JSON array using actual published field IDs.'); } }",
+              "pm.sendRequest({url:base+'/health',method:'GET'}, function(error,response) {",
+              "  if(error || !response || response.code!==200) block('API health check failed; SQL request was not sent.');",
+              "  let h; try{h=response.json();}catch(e){block('Invalid API health response.');}",
+              "  if(h.mockDatabase!==false || h.workersEnabled!==false) block('BLOCKED: API must use real SQL with workers disabled. StartServices.bat forces mocks and cannot be used for this collection.');",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 — Retrieve actual published service version",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/configuration/service-version/get-published",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"serviceID\": {{serviceId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "function block(message) {",
+              "  pm.request.url.update('http://127.0.0.1:1/BLOCKED-SQL-QA-REQUEST');",
+              "  console.error(message);",
+              "  if (pm.execution && typeof pm.execution.skipRequest === 'function') pm.execution.skipRequest();",
+              "  throw new Error(message);",
+              "}",
+              "if (pm.collectionVariables.get('sqlPrerequisitesReviewed') !== 'YES') block('BLOCKED: approved Agent identity, JamunaCustomer360 target, local development provider isolation and committed ticket authorization must be reviewed first. See JamunaCustomer360Setup.md.');",
+              "const base = pm.collectionVariables.get('baseUrl');",
+              "if (!new RegExp('^https?:[/][/](localhost|127[.]0[.]0[.]1)(:[0-9]+)?[/]?$').test(base)) block('BLOCKED: configure the approved local loopback API URL.');",
+              "const body = pm.request.body && pm.request.body.raw;",
+              "if (body && body.includes('{{serviceId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('serviceId')))) block('Select a real published serviceId first.');",
+              "if (body && body.includes('{{versionId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('versionId')))) block('Retrieve a published version first.');",
+              "if (body && body.includes('{{ticketId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('ticketId')))) block('Create a real SQL ticket first.');",
+              "if (body && body.includes('{{fieldValuesJson}}')) { try { const values=JSON.parse(pm.collectionVariables.get('fieldValuesJson')); if(!Array.isArray(values)) throw new Error(); } catch(e) { block('fieldValuesJson must be a reviewed JSON array using actual published field IDs.'); } }",
+              "pm.sendRequest({url:base+'/health',method:'GET'}, function(error,response) {",
+              "  if(error || !response || response.code!==200) block('API health check failed; SQL request was not sent.');",
+              "  let h; try{h=response.json();}catch(e){block('Invalid API health response.');}",
+              "  if(h.mockDatabase!==false || h.workersEnabled!==false) block('BLOCKED: API must use real SQL with workers disabled. StartServices.bat forces mocks and cannot be used for this collection.');",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200){const rows=pm.response.json().data.rows1;pm.collectionVariables.set('versionId','');if(rows.length===1&&rows[0].versionStatus==='PUBLISHED')pm.collectionVariables.set('versionId',String(rows[0].versionID));else console.error('No single published version found. No version ID has been selected.');}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 — Inspect actual published fields; configure fieldValuesJson",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/configuration/service-field/get-by-version",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"versionID\": {{versionId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "function block(message) {",
+              "  pm.request.url.update('http://127.0.0.1:1/BLOCKED-SQL-QA-REQUEST');",
+              "  console.error(message);",
+              "  if (pm.execution && typeof pm.execution.skipRequest === 'function') pm.execution.skipRequest();",
+              "  throw new Error(message);",
+              "}",
+              "if (pm.collectionVariables.get('sqlPrerequisitesReviewed') !== 'YES') block('BLOCKED: approved Agent identity, JamunaCustomer360 target, local development provider isolation and committed ticket authorization must be reviewed first. See JamunaCustomer360Setup.md.');",
+              "const base = pm.collectionVariables.get('baseUrl');",
+              "if (!new RegExp('^https?:[/][/](localhost|127[.]0[.]0[.]1)(:[0-9]+)?[/]?$').test(base)) block('BLOCKED: configure the approved local loopback API URL.');",
+              "const body = pm.request.body && pm.request.body.raw;",
+              "if (body && body.includes('{{serviceId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('serviceId')))) block('Select a real published serviceId first.');",
+              "if (body && body.includes('{{versionId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('versionId')))) block('Retrieve a published version first.');",
+              "if (body && body.includes('{{ticketId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('ticketId')))) block('Create a real SQL ticket first.');",
+              "if (body && body.includes('{{fieldValuesJson}}')) { try { const values=JSON.parse(pm.collectionVariables.get('fieldValuesJson')); if(!Array.isArray(values)) throw new Error(); } catch(e) { block('fieldValuesJson must be a reviewed JSON array using actual published field IDs.'); } }",
+              "pm.sendRequest({url:base+'/health',method:'GET'}, function(error,response) {",
+              "  if(error || !response || response.code!==200) block('API health check failed; SQL request was not sent.');",
+              "  let h; try{h=response.json();}catch(e){block('Invalid API health response.');}",
+              "  if(h.mockDatabase!==false || h.workersEnabled!==false) block('BLOCKED: API must use real SQL with workers disabled. StartServices.bat forces mocks and cannot be used for this collection.');",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 — INSERT ticket through dbo.usp_Ticket_Create",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/tickets",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"serviceID\": {{serviceId}},\n  \"versionID\": {{versionId}},\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"customerReference\": \"{{customerReference}}\",\n  \"fields\": {{fieldValuesJson}},\n  \"description\": \"Synthetic local development ticket for JamunaCustomer360\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "function block(message) {",
+              "  pm.request.url.update('http://127.0.0.1:1/BLOCKED-SQL-QA-REQUEST');",
+              "  console.error(message);",
+              "  if (pm.execution && typeof pm.execution.skipRequest === 'function') pm.execution.skipRequest();",
+              "  throw new Error(message);",
+              "}",
+              "if (pm.collectionVariables.get('sqlPrerequisitesReviewed') !== 'YES') block('BLOCKED: approved Agent identity, JamunaCustomer360 target, local development provider isolation and committed ticket authorization must be reviewed first. See JamunaCustomer360Setup.md.');",
+              "const base = pm.collectionVariables.get('baseUrl');",
+              "if (!new RegExp('^https?:[/][/](localhost|127[.]0[.]0[.]1)(:[0-9]+)?[/]?$').test(base)) block('BLOCKED: configure the approved local loopback API URL.');",
+              "const body = pm.request.body && pm.request.body.raw;",
+              "if (body && body.includes('{{serviceId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('serviceId')))) block('Select a real published serviceId first.');",
+              "if (body && body.includes('{{versionId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('versionId')))) block('Retrieve a published version first.');",
+              "if (body && body.includes('{{ticketId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('ticketId')))) block('Create a real SQL ticket first.');",
+              "if (body && body.includes('{{fieldValuesJson}}')) { try { const values=JSON.parse(pm.collectionVariables.get('fieldValuesJson')); if(!Array.isArray(values)) throw new Error(); } catch(e) { block('fieldValuesJson must be a reviewed JSON array using actual published field IDs.'); } }",
+              "pm.sendRequest({url:base+'/health',method:'GET'}, function(error,response) {",
+              "  if(error || !response || response.code!==200) block('API health check failed; SQL request was not sent.');",
+              "  let h; try{h=response.json();}catch(e){block('Invalid API health response.');}",
+              "  if(h.mockDatabase!==false || h.workersEnabled!==false) block('BLOCKED: API must use real SQL with workers disabled. StartServices.bat forces mocks and cannot be used for this collection.');",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200){const d=pm.response.json().data;pm.test('Real SQL ticket number format',()=>pm.expect(d.ticketNumber).to.match(/^J360-/));if(/^J360-/.test(d.ticketNumber)){pm.collectionVariables.set('ticketId',String(d.requestID));pm.collectionVariables.set('ticketNumber',d.ticketNumber);}}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 — Read inserted ticket through SQL procedure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/tickets/ticket/get-by-id",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestID\": {{ticketId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "function block(message) {",
+              "  pm.request.url.update('http://127.0.0.1:1/BLOCKED-SQL-QA-REQUEST');",
+              "  console.error(message);",
+              "  if (pm.execution && typeof pm.execution.skipRequest === 'function') pm.execution.skipRequest();",
+              "  throw new Error(message);",
+              "}",
+              "if (pm.collectionVariables.get('sqlPrerequisitesReviewed') !== 'YES') block('BLOCKED: approved Agent identity, JamunaCustomer360 target, local development provider isolation and committed ticket authorization must be reviewed first. See JamunaCustomer360Setup.md.');",
+              "const base = pm.collectionVariables.get('baseUrl');",
+              "if (!new RegExp('^https?:[/][/](localhost|127[.]0[.]0[.]1)(:[0-9]+)?[/]?$').test(base)) block('BLOCKED: configure the approved local loopback API URL.');",
+              "const body = pm.request.body && pm.request.body.raw;",
+              "if (body && body.includes('{{serviceId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('serviceId')))) block('Select a real published serviceId first.');",
+              "if (body && body.includes('{{versionId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('versionId')))) block('Retrieve a published version first.');",
+              "if (body && body.includes('{{ticketId}}') && !/^[1-9][0-9]*$/.test(String(pm.collectionVariables.get('ticketId')))) block('Create a real SQL ticket first.');",
+              "if (body && body.includes('{{fieldValuesJson}}')) { try { const values=JSON.parse(pm.collectionVariables.get('fieldValuesJson')); if(!Array.isArray(values)) throw new Error(); } catch(e) { block('fieldValuesJson must be a reviewed JSON array using actual published field IDs.'); } }",
+              "pm.sendRequest({url:base+'/health',method:'GET'}, function(error,response) {",
+              "  if(error || !response || response.code!==200) block('API health check failed; SQL request was not sent.');",
+              "  let h; try{h=response.json();}catch(e){block('Invalid API health response.');}",
+              "  if(h.mockDatabase!==false || h.workersEnabled!==false) block('BLOCKED: API must use real SQL with workers disabled. StartServices.bat forces mocks and cannot be used for this collection.');",
+              "});"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200',()=>pm.response.to.have.status(200));",
+              "if(pm.response.code===200){const rows=pm.response.json().data.rows1;pm.test('Inserted SQL ticket can be read back',()=>{pm.expect(rows).to.have.lengthOf(1);pm.expect(String(rows[0].requestID)).to.eql(String(pm.collectionVariables.get('ticketId')));pm.expect(rows[0].ticketNumber).to.eql(pm.collectionVariables.get('ticketNumber'));pm.expect(rows[0].approvalStatus).to.eql('PENDING');});}"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+

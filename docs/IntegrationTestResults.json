@@ -1,0 +1,34 @@
+{
+  "results": [
+    {
+      "Name": "SQL stored procedure execution",
+      "Status": "BLOCKED",
+      "Evidence": "Live target/identity/fixture/isolation approval and prepared case implementation required"
+    },
+    {
+      "Name": "Database restricted-principal permissions",
+      "Status": "BLOCKED",
+      "Evidence": "Live target/identity/fixture/isolation approval and prepared case implementation required"
+    },
+    {
+      "Name": "Ticket transaction consistency",
+      "Status": "BLOCKED",
+      "Evidence": "Live target/identity/fixture/isolation approval and prepared case implementation required"
+    },
+    {
+      "Name": "Approval independent-session concurrency",
+      "Status": "BLOCKED",
+      "Evidence": "Live target/identity/fixture/isolation approval and prepared case implementation required"
+    },
+    {
+      "Name": "Outbox independent-session concurrency",
+      "Status": "BLOCKED",
+      "Evidence": "Live target/identity/fixture/isolation approval and prepared case implementation required"
+    },
+    {
+      "Name": "Tracking lifecycle and fixed original expiry",
+      "Status": "BLOCKED",
+      "Evidence": "Live target/identity/fixture/isolation approval and prepared case implementation required"
+    }
+  ]
+}

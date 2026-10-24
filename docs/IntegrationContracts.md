@@ -1,0 +1,11 @@
+# External integrations
+
+`Integrations/Contracts.cs` defines internal interfaces for Avaya assertions, external Manager authentication, CBS customers/accounts, Card summaries/transactions, Internet Banking profiles, delivery-envelope protection, SMS and email. Their DTOs are internal application models, not confirmed external wire formats. No endpoint, authentication scheme, credential or provider response format is fabricated.
+
+Production defaults are `UnconfiguredIntegrations`: every attempted operation fails with a safe 503. `DevelopmentIntegrations` returns explicitly synthetic customers/accounts/cards, protects envelopes with an ephemeral development Data Protection key, simulates provider acceptance/unknown outcomes and performs no network banking or delivery request. The fixed development login endpoint is separate from these production authentication interfaces.
+
+Provide for each real adapter: authoritative API/OpenAPI documentation; approved base URLs; TLS and server-to-server authentication; credential/key custody and rotation; identity/session signature or introspection rules; request/response mapping; timeout/rate limits; customer access scope; idempotency and provider acceptance semantics; definitive-versus-unknown error classification; reconciliation and callback authentication; sanitization/redaction rules; sandbox test cases and evidence.
+
+Middleware customer operations record integration start/completion without bodies or customer identifiers. EndpointCode values are logical labels (for example CBS.Profile), not claimed provider addresses. The customer reference in a request must be authorized by the trusted adapter; no direct CBS/Card/IB database access exists. Account numbers and card data in synthetic summaries are masked; actual data-minimization rules require bank approval.
+
+Communication workers are prepared but unregistered. The processor uses claim/attempt stored procedures, preserves idempotency references and never blindly retries an unknown provider outcome. UNKNOWN is not sent as an invented procedure result: an uncertain STARTED attempt remains for SQL lease quarantine/reconciliation. A provider acceptance fact is not itself permission to change a forwarding status. Full worker retry/backlog/forwarding finalization remains blocked by the documented read-contract gaps.

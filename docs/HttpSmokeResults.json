@@ -1,0 +1,152 @@
+{
+  "Suite": "API with development doubles, no SQL execution",
+  "Transport": "All-mock Testing loopback HTTP; production TLS not tested",
+  "Passed": 24,
+  "Failed": 0,
+  "Results": [
+    {
+      "Name": "Health distinguishes pending SQL",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Development OpenAPI available",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Anonymous Manager action rejected",
+      "Status": "PASS",
+      "Expected": 401,
+      "Actual": 401
+    },
+    {
+      "Name": "Forged identity headers rejected",
+      "Status": "PASS",
+      "Expected": 401,
+      "Actual": 401
+    },
+    {
+      "Name": "Development login requires CSRF",
+      "Status": "PASS",
+      "Expected": 400,
+      "Actual": 400
+    },
+    {
+      "Name": "Development Agent login",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Agent Manager action denied",
+      "Status": "PASS",
+      "Expected": 403,
+      "Actual": 403
+    },
+    {
+      "Name": "Role body field rejected",
+      "Status": "PASS",
+      "Expected": 400,
+      "Actual": 400
+    },
+    {
+      "Name": "Synthetic ticket creation",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Duplicate request conflicts",
+      "Status": "PASS",
+      "Expected": 409,
+      "Actual": 409
+    },
+    {
+      "Name": "Authenticated mutation requires CSRF",
+      "Status": "PASS",
+      "Expected": 400,
+      "Actual": 400
+    },
+    {
+      "Name": "Malformed rowversion rejected",
+      "Status": "PASS",
+      "Expected": 403,
+      "Actual": 403
+    },
+    {
+      "Name": "Development Manager login",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Empty rejection reason rejected",
+      "Status": "PASS",
+      "Expected": 400,
+      "Actual": 400
+    },
+    {
+      "Name": "Manager approves synthetic ticket",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Stale decision conflicts",
+      "Status": "PASS",
+      "Expected": 409,
+      "Actual": 409
+    },
+    {
+      "Name": "Unknown tracking token is generic unavailable",
+      "Status": "PASS",
+      "Expected": 404,
+      "Actual": 404
+    },
+    {
+      "Name": "Worker procedure has no HTTP endpoint",
+      "Status": "PASS",
+      "Expected": 404,
+      "Actual": 404
+    },
+    {
+      "Name": "Real Avaya adapter fails closed",
+      "Status": "PASS",
+      "Expected": 503,
+      "Actual": 503
+    },
+    {
+      "Name": "Development Auditor login",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Auditor denied ticket mutation",
+      "Status": "PASS",
+      "Expected": 403,
+      "Actual": 403
+    },
+    {
+      "Name": "Development Configuration login",
+      "Status": "PASS",
+      "Expected": 200,
+      "Actual": 200
+    },
+    {
+      "Name": "Configuration user cannot Manager approve",
+      "Status": "PASS",
+      "Expected": 403,
+      "Actual": 403
+    },
+    {
+      "Name": "Manager cannot publish configuration",
+      "Status": "PASS",
+      "Expected": 403,
+      "Actual": 403
+    }
+  ]
+}

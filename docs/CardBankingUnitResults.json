@@ -1,0 +1,439 @@
+{
+  "suite": "database-independent .NET unit tests",
+  "passed": 108,
+  "failed": 0,
+  "results": [
+    {
+      "name": "Capability AGENT -\u003E AGENT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E MANAGER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E CONFIG",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E WORKER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E AUDIT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E PUBLIC",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E READ",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AGENT -\u003E TRUSTED",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E AGENT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E MANAGER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E CONFIG",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E WORKER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E AUDIT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E PUBLIC",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E READ",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability MANAGER -\u003E TRUSTED",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E AGENT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E MANAGER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E CONFIG",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E WORKER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E AUDIT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E PUBLIC",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E READ",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability CONFIG -\u003E TRUSTED",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E AGENT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E MANAGER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E CONFIG",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E WORKER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E AUDIT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E PUBLIC",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E READ",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability WORKER -\u003E TRUSTED",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E AGENT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E MANAGER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E CONFIG",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E WORKER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E AUDIT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E PUBLIC",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E READ",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability AUDIT -\u003E TRUSTED",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E AGENT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E MANAGER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E CONFIG",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E WORKER",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E AUDIT",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E PUBLIC",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E READ",
+      "status": "PASS"
+    },
+    {
+      "name": "Capability PUBLIC -\u003E TRUSTED",
+      "status": "PASS"
+    },
+    {
+      "name": "Expired identity rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Mock production startup rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Mock authentication outside dev rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Worker activation rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Avaya unconfigured fails closed",
+      "status": "PASS"
+    },
+    {
+      "name": "Manager unconfigured fails closed",
+      "status": "PASS"
+    },
+    {
+      "name": "Rejection requires reason",
+      "status": "PASS"
+    },
+    {
+      "name": "Rowversion size enforced",
+      "status": "PASS"
+    },
+    {
+      "name": "Paging is bounded",
+      "status": "PASS"
+    },
+    {
+      "name": "Positive identifiers required",
+      "status": "PASS"
+    },
+    {
+      "name": "Reversed dates rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Follow-up note required",
+      "status": "PASS"
+    },
+    {
+      "name": "Manual retry reason required",
+      "status": "PASS"
+    },
+    {
+      "name": "Forwarding plain-text request accepted",
+      "status": "PASS"
+    },
+    {
+      "name": "Forwarding header injection rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Forwarding HTML rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Forwarding unknown destination rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Past reminder rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Future UTC reminder accepted",
+      "status": "PASS"
+    },
+    {
+      "name": "Published mutation conflict simulated",
+      "status": "PASS"
+    },
+    {
+      "name": "Synthetic middleware demographics and mobile isolation",
+      "status": "PASS"
+    },
+    {
+      "name": "Account detail selection and synthetic financial information",
+      "status": "PASS"
+    },
+    {
+      "name": "Account transactions are selected, filtered and financially consistent",
+      "status": "PASS"
+    },
+    {
+      "name": "Statement mock simulates action without email and does not accept browser recipients",
+      "status": "PASS"
+    },
+    {
+      "name": "Card middleware supplies two clients and multiple masked cards",
+      "status": "PASS"
+    },
+    {
+      "name": "Ticket creation derives trusted Avaya interaction",
+      "status": "PASS"
+    },
+    {
+      "name": "Manager cannot create Agent ticket",
+      "status": "PASS"
+    },
+    {
+      "name": "Unverified interaction rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Unpublished service version rejected by mock contract",
+      "status": "PASS"
+    },
+    {
+      "name": "Duplicate dynamic fields rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Idempotent duplicate conflicts",
+      "status": "PASS"
+    },
+    {
+      "name": "Mandatory approval initial state",
+      "status": "PASS"
+    },
+    {
+      "name": "Approval and stale-rowversion conflict",
+      "status": "PASS"
+    },
+    {
+      "name": "Agent Manager-only call blocked",
+      "status": "PASS"
+    },
+    {
+      "name": "Unapproved status transition rejected",
+      "status": "PASS"
+    },
+    {
+      "name": "Token randomness and canonical hashing",
+      "status": "PASS"
+    },
+    {
+      "name": "Invalid token has generic response",
+      "status": "PASS"
+    },
+    {
+      "name": "Expired or unknown tracking returns generic unavailable",
+      "status": "PASS"
+    },
+    {
+      "name": "Created token can track without PII",
+      "status": "PASS"
+    },
+    {
+      "name": "Replacement contract gap fails closed",
+      "status": "PASS"
+    },
+    {
+      "name": "Protected delivery round trip",
+      "status": "PASS"
+    },
+    {
+      "name": "Expired delivery cannot decrypt",
+      "status": "PASS"
+    },
+    {
+      "name": "Typed projection refuses missing result columns",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52000 safe HTTP 403",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 229 safe HTTP 403",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52001 safe HTTP 400",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52004 safe HTTP 409",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52005 safe HTTP 422",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52006 safe HTTP 422",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52009 safe HTTP 409",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 52011 safe HTTP 410",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error 1205 safe HTTP 409",
+      "status": "PASS"
+    },
+    {
+      "name": "SQL error -2 safe HTTP 503",
+      "status": "PASS"
+    },
+    {
+      "name": "Exact SQL output metadata and no ad-hoc command",
+      "status": "PASS"
+    },
+    {
+      "name": "Only verified snapshots populate SQL session",
+      "status": "PASS"
+    },
+    {
+      "name": "Unknown provider outcome leaves started attempt for reconciliation",
+      "status": "PASS"
+    },
+    {
+      "name": "Reconciliation missing database contract is explicit",
+      "status": "PASS"
+    },
+    {
+      "name": "Middleware success audited without customer bodies",
+      "status": "PASS"
+    },
+    {
+      "name": "Middleware failure logs sanitized code only",
+      "status": "PASS"
+    },
+    {
+      "name": "Development lookup and creation profile share the default mobile",
+      "status": "PASS"
+    }
+  ]
+}

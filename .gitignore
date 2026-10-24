@@ -1,0 +1,23 @@
+**/bin/
+**/obj/
+**/TestResults/
+**/appsettings.Local.json
+*.user
+*.pfx
+keys/
+
+# Local files and generated output
+**/bin/
+**/obj/
+**/TestResults/
+node_modules/
+dist/
+coverage/
+keys/
+.env*
+!.env.example
+**/appsettings.Local.json
+*.log
+*.pfx
+*.key
+*.user

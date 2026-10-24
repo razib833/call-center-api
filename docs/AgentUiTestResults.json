@@ -1,0 +1,50 @@
+{
+  "environment": "Isolated Development API with all mocks; no SQL execution and no ticket created.",
+  "results": [
+    {
+      "name": "Launch page serves HTML without authenticating URL Agent",
+      "status": "PASS"
+    },
+    {
+      "name": "Launch HTML responses are no-store",
+      "status": "PASS"
+    },
+    {
+      "name": "Static asset /agent/agent.js",
+      "status": "PASS"
+    },
+    {
+      "name": "Static asset /agent/agent.css",
+      "status": "PASS"
+    },
+    {
+      "name": "Query launch does not authenticate API session",
+      "status": "PASS"
+    },
+    {
+      "name": "CSRF token and cookie obtained over local HTTP",
+      "status": "PASS"
+    },
+    {
+      "name": "Explicit development authentication uses fixed backend Agent",
+      "status": "PASS"
+    },
+    {
+      "name": "Authenticated Agent session can be read",
+      "status": "PASS"
+    },
+    {
+      "name": "Authenticated customer search uses backend integration",
+      "status": "PASS"
+    },
+    {
+      "name": "Published-service selector input endpoint callable",
+      "status": "PASS"
+    },
+    {
+      "name": "Browser layout and interaction checks",
+      "status": "BLOCKED",
+      "reason": "Playwright Chromium not bundled; installed Chrome process launch denied (spawn EPERM). No screenshot or browser interaction PASS claimed."
+    }
+  ]
+}

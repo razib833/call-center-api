@@ -1,0 +1,61 @@
+{
+  "date": "2026-10-16",
+  "sdk": "10.0.302",
+  "framework": "net10.0",
+  "callableProcedures": 124,
+  "internalProceduresNotExposed": 4,
+  "httpOperations": 117,
+  "unit": {
+    "passed": 103,
+    "failed": 0
+  },
+  "apiSmoke": {
+    "passed": 24,
+    "failed": 0,
+    "transport": "All-mock Testing loopback HTTP; production TLS not tested"
+  },
+  "sqlIntegration": {
+    "executed": 0,
+    "passed": 0,
+    "blocked": 6
+  },
+  "existingSqlSuite": {
+    "executed": 0,
+    "passed": 0,
+    "blocked": 374
+  },
+  "sqlQA009": "NOT EXECUTED",
+  "productionReady": false,
+  "workersEnabled": false,
+  "sqlSchemaModified": false,
+  "mockDefaults": false,
+  "dependencyAudit": "PASS: all-project audited restore against official NuGet snapshot; PKCS 9.0.21; no audit suppression",
+  "httpsValidation": "BLOCKED",
+  "applicationDefaultTarget": {
+    "server": "DESKTOP-BUDV4V7",
+    "database": "JamunaCustomer360",
+    "reason": "Explicit user selection for local development API operations",
+    "liveConnectionVerified": false
+  },
+  "targetChangeVerification": {
+    "build": "PASS in isolated artifacts directory; running API DLL was locked and was not replaced",
+    "unitPassed": 102,
+    "unitFailed": 0,
+    "sqlExecuted": false
+  },
+  "agentUi": {
+    "entry": "/agent",
+    "framework": "React 19.3.1 + TypeScript 7.0.2",
+    "defaultMobile": "01712345678",
+    "defaultProvider": "MOCK",
+    "frontendTestsPassed": 32,
+    "frontendTestsFailed": 0,
+    "typecheck": "PASS",
+    "productionBuild": "PASS",
+    "dependencyAudit": "0 vulnerabilities",
+    "httpPreview": "PASS",
+    "visualBrowserReview": "BLOCKED",
+    "liveMiddlewareExecuted": 0,
+    "sqlWritesDuringUiDevelopment": 0
+  }
+}

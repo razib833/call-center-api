@@ -1,0 +1,401 @@
+{
+  "info": {
+    "name": "Customer360 — Local Mock Postman Samples",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Run in order against the explicitly enabled local development mock API. Cookie authentication, no bearer token. All sample data is synthetic. These are API requests, not evidence of live SQL tests. Do not use mock identity endpoints in production."
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://localhost:7246"
+    },
+    {
+      "key": "csrfToken",
+      "value": ""
+    },
+    {
+      "key": "ticketId",
+      "value": ""
+    },
+    {
+      "key": "rowVersion",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "01 — Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "02 — CSRF before login",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/auth/csrf",
+        "description": "Refresh after each login: antiforgery tokens are tied to the current signed-in identity."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "if (pm.response.code === 200) pm.collectionVariables.set('csrfToken', pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 — Development Agent session",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/development/session",
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"persona\": \"Agent\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "04 — Refresh CSRF for Agent",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/auth/csrf",
+        "description": "Refresh after each login: antiforgery tokens are tied to the current signed-in identity."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "if (pm.response.code === 200) pm.collectionVariables.set('csrfToken', pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "05 — Synthetic customer profile",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/customers/profile",
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"reference\": \"SYNTHETIC-CUSTOMER\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 — Create synthetic ticket",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/tickets",
+        "description": "Development mock version 1 is published. Real service/version/field IDs must come from approved live configuration.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"serviceID\": 1,\n  \"versionID\": 1,\n  \"idempotencyKey\": \"{{$guid}}\",\n  \"customerReference\": \"SYNTHETIC-CUSTOMER\",\n  \"fields\": [\n    {\n      \"fieldID\": 1,\n      \"value\": \"Synthetic Postman request\"\n    }\n  ],\n  \"description\": \"Synthetic Postman ticket\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "if (pm.response.code === 200) pm.collectionVariables.set('ticketId', pm.response.json().data.requestID);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "07 — Read ticket and save rowversion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/tickets/ticket/get-by-id",
+        "description": "Use actual returned rowVersion; never manufacture a SQL version.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestID\": {{ticketId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "if (pm.response.code === 200) { const row = pm.response.json().data.rows1[0]; if (row) pm.collectionVariables.set('rowVersion', row.rowVersion); }"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "08 — Switch to development Manager",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/auth/development/session",
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"persona\": \"Manager\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "09 — Refresh CSRF for Manager",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/auth/csrf",
+        "description": "Refresh after each login: antiforgery tokens are tied to the current signed-in identity."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });",
+              "if (pm.response.code === 200) pm.collectionVariables.set('csrfToken', pm.response.json().data.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "10 — Manager approves ticket",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/tickets/ticket/approve",
+        "description": "Only Manager can approve. An Agent receives 403. A repeated approval with the old version receives 409 in this mock workflow.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestID\": {{ticketId}},\n  \"expectedRowVersion\": \"{{rowVersion}}\",\n  \"remarks\": \"Synthetic Manager approval\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "11 — Read approved ticket",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-CSRF-TOKEN",
+            "value": "{{csrfToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/api/v1/tickets/ticket/get-by-id",
+        "description": "",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"requestID\": {{ticketId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12 — Current session",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/api/v1/auth/session",
+        "description": ""
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('HTTP 200', function () { pm.response.to.have.status(200); });"
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "noauth"
+  }
+}

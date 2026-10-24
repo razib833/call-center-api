@@ -1,0 +1,33 @@
+{
+  "scope": "Static assets and read-only HTTP GET checks only. No SQL writes, sessions or customer requests executed.",
+  "results": [
+    {
+      "name": "Unique HTML IDs and all literal JavaScript DOM references exist",
+      "status": "PASS"
+    },
+    {
+      "name": "Landing reference sections present",
+      "status": "PASS"
+    },
+    {
+      "name": "Running API serves updated /agent",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Running API serves updated /agent/landing.css",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Running API serves updated /agent/agent.js",
+      "status": "PASS",
+      "http": 200
+    },
+    {
+      "name": "Visual browser validation",
+      "status": "BLOCKED",
+      "reason": "Browser process launch previously denied (EPERM); source/layout not visually verified."
+    }
+  ]
+}

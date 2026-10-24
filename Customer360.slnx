@@ -1,0 +1,1 @@
+<Solution><Project Path="src/Customer360.Api/Customer360.Api.csproj" /><Project Path="tests/Customer360.UnitTests/Customer360.UnitTests.csproj" /><Project Path="tests/Customer360.IntegrationTests/Customer360.IntegrationTests.csproj" /></Solution>
